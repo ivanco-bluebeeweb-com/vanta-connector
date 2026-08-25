@@ -215,8 +215,9 @@ def _framework_entity(f: dict) -> VantaFramework:
     return VantaFramework(
         framework_id=f.get("id", ""),
         name=f.get("name", ""),
-        control_count=len(f.get("controls") or []),
-        percent_complete=f.get("percentComplete", 0.0),
+        status=f.get("status", ""),
+        tests_passing=f.get("testsPassing", 0),
+        tests_total=f.get("testsTotal", len(f.get("controls") or [])),
     )
 
 
@@ -238,12 +239,11 @@ async def list_frameworks(ctx, params: ListFrameworksParams) -> ActionResult:
 def _risk_entity(r: dict) -> VantaRisk:
     return VantaRisk(
         risk_id=r.get("id", ""),
-        name=r.get("name", r.get("title", "")),
-        description=r.get("description", ""),
-        likelihood=r.get("likelihood", ""),
-        impact=r.get("impact", ""),
+        title=r.get("name", r.get("title", "")),
+        likelihood=r.get("likelihood", 0) or 0,
+        impact=r.get("impact", 0) or 0,
         status=r.get("status", r.get("treatmentStatus", "")),
-        treatment=r.get("treatment", r.get("treatmentPlan", "")),
+        owner=r.get("owner", r.get("ownerName", "")),
     )
 
 
@@ -340,9 +340,8 @@ def _vendor_entity(v: dict) -> VantaVendor:
         vendor_id=v.get("id", ""),
         name=v.get("name", ""),
         risk_tier=v.get("riskTier", v.get("riskLevel", "")),
-        status=v.get("status", v.get("securityReviewStatus", "")),
-        last_review_date=v.get("lastReviewDate", v.get("lastAssessedAt", "")),
-        next_review_date=v.get("nextReviewDate", ""),
+        review_status=v.get("status", v.get("securityReviewStatus", "")),
+        last_reviewed=v.get("lastReviewDate", v.get("lastAssessedAt", "")),
     )
 
 
@@ -415,9 +414,9 @@ def _document_entity(d: dict) -> VantaDocument:
     return VantaDocument(
         document_id=d.get("id", ""),
         name=d.get("name", d.get("title", "")),
+        document_type=d.get("documentType", d.get("type", "")),
         status=d.get("status", ""),
-        last_reviewed_date=d.get("lastReviewedDate", d.get("lastReviewedAt", "")),
-        next_review_date=d.get("nextReviewDate", ""),
+        last_updated=d.get("lastReviewedDate", d.get("lastReviewedAt", d.get("updatedAt", ""))),
     )
 
 
@@ -453,13 +452,14 @@ async def get_document(ctx, params: DocumentIdParams) -> ActionResult:
 # ---- People (personnel compliance) ----
 
 def _person_entity(p: dict) -> VantaPerson:
+    offboarding_status = str(p.get("offboardingStatus", p.get("employmentStatus", "")))
+    training_complete = bool(p.get("securityTrainingComplete", p.get("hasCompletedTraining", False)))
     return VantaPerson(
         person_id=p.get("id", ""),
-        full_name=p.get("fullName", p.get("name", "")),
+        name=p.get("fullName", p.get("name", "")),
         email=p.get("email", ""),
-        employment_status=p.get("employmentStatus", ""),
-        security_training_complete=bool(p.get("securityTrainingComplete", p.get("hasCompletedTraining", False))),
-        offboarding_status=p.get("offboardingStatus", ""),
+        offboarded=offboarding_status.lower() in ("offboarded", "terminated", "inactive"),
+        training_status="complete" if training_complete else "incomplete",
     )
 
 
@@ -557,20 +557,30 @@ async def audit_compliance_posture(ctx, params: ConnectionRefParams) -> ActionRe
             return []
         return (data or {}).get("results", {}).get("data", data.get("data", []) if isinstance(data, dict) else [])
 
-    tests = await _safe_list("/v1/tests", {"pageSize": 200, "status": "FAIL"})
+    tests = await _safe_list("/v1/tests", {"pageSize": 200})
     risks = await _safe_list("/v1/risks", {"pageSize": 200})
     vendors = await _safe_list("/v1/vendors", {"pageSize": 200})
-    documents = await _safe_list("/v1/documents", {"pageSize": 200})
+    integrations = await _safe_list("/v1/integrations", {})
 
+    failing_tests = sum(1 for t in tests if str(t.get("status", t.get("outcome", ""))).upper() in ("FAIL", "FAILING"))
     overdue_vendors = [v for v in vendors if (v.get("nextReviewDate") or "9999") < today]
-    overdue_docs = [d for d in documents if (d.get("nextReviewDate") or "9999") < today]
     open_risks = [r for r in risks if (r.get("status") or "").lower() not in ("closed", "resolved", "accepted")]
+    disabled_integrations = sum(1 for i in integrations if str(i.get("status", "")).upper() not in ("ACTIVE", "CONNECTED", "OK"))
+    org_name = c.get("label") or c.get("client_id", "") or "Vanta organization"
+    notes = (
+        f"{failing_tests} failing test(s) of {len(tests)}; {len(open_risks)} open risk(s); "
+        f"{len(overdue_vendors)} overdue vendor review(s); {disabled_integrations} disabled integration(s)."
+    )
 
     return ActionResult.success(data=ComplianceAudit(
-        failing_test_count=len(tests),
-        open_risk_count=len(open_risks),
-        overdue_vendor_review_count=len(overdue_vendors),
-        overdue_document_review_count=len(overdue_docs),
-        failing_tests=[_test_entity(t) for t in tests[:20]],
+        organization=org_name,
+        failing_tests=failing_tests,
+        total_tests=len(tests),
+        overdue_risks=len(open_risks),
+        total_risks=len(risks),
+        overdue_vendor_reviews=len(overdue_vendors),
+        total_vendors=len(vendors),
+        disabled_integrations=disabled_integrations,
+        notes=notes,
     ))
 

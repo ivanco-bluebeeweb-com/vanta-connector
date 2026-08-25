@@ -26,11 +26,12 @@ async def vanta_overview(ctx, **kwargs) -> ui.UINode:
     return ui.Stack(direction="v", gap=3, align="stretch", children=[
         ui.Header(text="Compliance overview", level=2),
         ui.Stack(direction="h", gap=4, align="stretch", children=[
-            ui.Stat(label="Failing tests", value=str(d.failing_tests)),
-            ui.Stat(label="Overdue risks", value=str(d.overdue_risks)),
-            ui.Stat(label="Overdue vendor reviews", value=str(d.overdue_vendor_reviews)),
-            ui.Stat(label="Frameworks tracked", value=str(d.framework_count)),
+            ui.Stat(label="Failing tests", value=f"{d.failing_tests}/{d.total_tests}"),
+            ui.Stat(label="Overdue risks", value=f"{d.overdue_risks}/{d.total_risks}"),
+            ui.Stat(label="Overdue vendor reviews", value=f"{d.overdue_vendor_reviews}/{d.total_vendors}"),
+            ui.Stat(label="Disabled integrations", value=str(d.disabled_integrations)),
         ]),
+        ui.Text(d.notes, variant="caption"),
     ])
 
 
