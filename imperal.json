@@ -1,0 +1,4716 @@
+{
+  "manifest_schema_version": 3,
+  "sdk_version": "5.11.0",
+  "app_id": "vanta-connector",
+  "version": "0.1.0",
+  "name": "Vanta",
+  "description": "Connect your own Vanta organization (OAuth2 Client Credentials) to monitor compliance Tests/Controls/Frameworks, manage the Risk Register and Vendor risk inventory, review Policy documents and Personnel compliance status, and get an aggregated audit-readiness health report.",
+  "icon": "icon.svg",
+  "actions_explicit": true,
+  "system": false,
+  "capabilities": [
+    "vanta:read",
+    "vanta:write"
+  ],
+  "tools": [
+    {
+      "name": "connect_vanta",
+      "description": "Connect a Vanta organization via OAuth2 Client Credentials (API application), after verifying connectivity.",
+      "action_type": "write",
+      "chain_callable": true,
+      "effects": [
+        "vanta.provider.connected"
+      ],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "label": {
+            "default": "",
+            "description": "Friendly organization label, e.g. 'Acme Corp — Production'.",
+            "title": "Label",
+            "type": "string"
+          },
+          "client_id": {
+            "description": "Vanta API application Client ID, from Settings > API.",
+            "title": "Client Id",
+            "type": "string"
+          },
+          "client_secret": {
+            "description": "Vanta API application Client Secret.",
+            "title": "Client Secret",
+            "type": "string"
+          },
+          "base_url": {
+            "default": "",
+            "description": "Optional API base URL override for segregated tenants. Defaults to https://api.vanta.com.",
+            "title": "Base Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "client_id",
+          "client_secret"
+        ],
+        "title": "ConnectVantaParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "connection_id": {
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "base_url": {
+            "title": "Base Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "connection_id",
+          "label",
+          "base_url"
+        ],
+        "title": "VantaConnection",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "vanta-connector.connect_vanta",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "vanta"
+    },
+    {
+      "name": "disconnect_vanta",
+      "description": "Disconnect a Vanta organization: deletes only the saved credentials. Nothing in Vanta itself is changed.",
+      "action_type": "write",
+      "chain_callable": true,
+      "effects": [
+        "vanta.provider.disconnected"
+      ],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "description": "Saved Vanta organization connection ID to remove from Imperal.",
+            "title": "Connection Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "connection_id"
+        ],
+        "title": "DisconnectVantaParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "ok": {
+            "title": "Ok",
+            "type": "boolean"
+          },
+          "detail": {
+            "title": "Detail",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "ok",
+          "detail"
+        ],
+        "title": "DeleteResult",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "vanta-connector.disconnect_vanta",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "vanta"
+    },
+    {
+      "name": "list_connections",
+      "description": "List the connected Vanta organizations.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {},
+        "title": "NoParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "$defs": {
+          "VantaConnection": {
+            "properties": {
+              "id": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "integer"
+                  }
+                ],
+                "title": "Id"
+              },
+              "title": {
+                "title": "Title",
+                "type": "string"
+              },
+              "kind": {
+                "default": "",
+                "title": "Kind",
+                "type": "string"
+              },
+              "subtitle": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Subtitle"
+              },
+              "description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Description"
+              },
+              "status": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Status"
+              },
+              "url": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Url"
+              },
+              "connection_id": {
+                "title": "Connection Id",
+                "type": "string"
+              },
+              "label": {
+                "title": "Label",
+                "type": "string"
+              },
+              "base_url": {
+                "title": "Base Url",
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "title",
+              "connection_id",
+              "label",
+              "base_url"
+            ],
+            "title": "VantaConnection",
+            "type": "object",
+            "x-sdl": "entity"
+          }
+        },
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "connections": {
+            "items": {
+              "$ref": "#/$defs/VantaConnection"
+            },
+            "title": "Connections",
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "connections"
+        ],
+        "title": "ConnectionList",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "vanta-connector.list_connections",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "vanta"
+    },
+    {
+      "name": "list_tests",
+      "description": "List automated compliance Tests (control checks) with their status (OK/FAIL/DISABLED/OUTDATED/NOT_APPLICABLE).",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Optional saved Vanta organization connection ID. Omit to use the first connected organization.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "status": {
+            "default": "",
+            "description": "Optional status filter: OK, FAIL, DISABLED, OUTDATED, NOT_APPLICABLE.",
+            "title": "Status",
+            "type": "string"
+          },
+          "limit": {
+            "default": 50,
+            "description": "Max tests to return (1-200).",
+            "title": "Limit",
+            "type": "integer"
+          },
+          "page_cursor": {
+            "default": "",
+            "description": "Pagination cursor from a previous call's next_page_cursor.",
+            "title": "Page Cursor",
+            "type": "string"
+          }
+        },
+        "title": "ListTestsParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "$defs": {
+          "VantaTest": {
+            "properties": {
+              "id": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "integer"
+                  }
+                ],
+                "title": "Id"
+              },
+              "title": {
+                "title": "Title",
+                "type": "string"
+              },
+              "kind": {
+                "default": "",
+                "title": "Kind",
+                "type": "string"
+              },
+              "subtitle": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Subtitle"
+              },
+              "description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Description"
+              },
+              "status": {
+                "title": "Status",
+                "type": "string"
+              },
+              "url": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Url"
+              },
+              "test_id": {
+                "title": "Test Id",
+                "type": "string"
+              },
+              "name": {
+                "title": "Name",
+                "type": "string"
+              },
+              "frameworks": {
+                "title": "Frameworks",
+                "type": "string"
+              },
+              "last_checked": {
+                "title": "Last Checked",
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "title",
+              "status",
+              "test_id",
+              "name",
+              "frameworks",
+              "last_checked"
+            ],
+            "title": "VantaTest",
+            "type": "object",
+            "x-sdl": "entity"
+          }
+        },
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "tests": {
+            "items": {
+              "$ref": "#/$defs/VantaTest"
+            },
+            "title": "Tests",
+            "type": "array"
+          },
+          "next_page_cursor": {
+            "title": "Next Page Cursor",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "tests",
+          "next_page_cursor"
+        ],
+        "title": "TestList",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "vanta-connector.list_tests",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "vanta"
+    },
+    {
+      "name": "get_test",
+      "description": "Read one compliance Test in full by id.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Optional saved Vanta organization connection ID. Omit to use the first connected organization.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "test_id": {
+            "description": "Vanta test ID.",
+            "title": "Test Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "test_id"
+        ],
+        "title": "TestIdParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "test_id": {
+            "title": "Test Id",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "frameworks": {
+            "title": "Frameworks",
+            "type": "string"
+          },
+          "last_checked": {
+            "title": "Last Checked",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "status",
+          "test_id",
+          "name",
+          "frameworks",
+          "last_checked"
+        ],
+        "title": "VantaTest",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "vanta-connector.get_test",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "vanta"
+    },
+    {
+      "name": "dismiss_test",
+      "description": "Dismiss a failing Test with a documented reason -- records an explicit exception/justification in Vanta rather than silently ignoring the failure.",
+      "action_type": "write",
+      "chain_callable": true,
+      "effects": [
+        "vanta.test.dismissed"
+      ],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Optional saved Vanta organization connection ID. Omit to use the first connected organization.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "test_id": {
+            "description": "Vanta test ID.",
+            "title": "Test Id",
+            "type": "string"
+          },
+          "reason": {
+            "description": "Reason for dismissing this test (recorded in Vanta as justification).",
+            "title": "Reason",
+            "type": "string"
+          }
+        },
+        "required": [
+          "test_id",
+          "reason"
+        ],
+        "title": "DismissTestParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "test_id": {
+            "title": "Test Id",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "frameworks": {
+            "title": "Frameworks",
+            "type": "string"
+          },
+          "last_checked": {
+            "title": "Last Checked",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "status",
+          "test_id",
+          "name",
+          "frameworks",
+          "last_checked"
+        ],
+        "title": "VantaTest",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "vanta-connector.dismiss_test",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "vanta"
+    },
+    {
+      "name": "list_controls",
+      "description": "List Controls (named requirements mapped to one or more frameworks, each backed by 1+ Tests).",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Optional saved Vanta organization connection ID. Omit to use the first connected organization.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "framework_id": {
+            "default": "",
+            "description": "Optional framework ID to filter controls to one framework.",
+            "title": "Framework Id",
+            "type": "string"
+          },
+          "limit": {
+            "default": 50,
+            "description": "Max controls to return (1-200).",
+            "title": "Limit",
+            "type": "integer"
+          },
+          "page_cursor": {
+            "default": "",
+            "description": "Pagination cursor from a previous call's next_page_cursor.",
+            "title": "Page Cursor",
+            "type": "string"
+          }
+        },
+        "title": "ListControlsParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "$defs": {
+          "VantaControl": {
+            "properties": {
+              "id": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "integer"
+                  }
+                ],
+                "title": "Id"
+              },
+              "title": {
+                "title": "Title",
+                "type": "string"
+              },
+              "kind": {
+                "default": "",
+                "title": "Kind",
+                "type": "string"
+              },
+              "subtitle": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Subtitle"
+              },
+              "description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Description"
+              },
+              "status": {
+                "title": "Status",
+                "type": "string"
+              },
+              "url": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Url"
+              },
+              "control_id": {
+                "title": "Control Id",
+                "type": "string"
+              },
+              "name": {
+                "title": "Name",
+                "type": "string"
+              },
+              "frameworks": {
+                "title": "Frameworks",
+                "type": "string"
+              },
+              "test_count": {
+                "title": "Test Count",
+                "type": "integer"
+              }
+            },
+            "required": [
+              "id",
+              "title",
+              "status",
+              "control_id",
+              "name",
+              "frameworks",
+              "test_count"
+            ],
+            "title": "VantaControl",
+            "type": "object",
+            "x-sdl": "entity"
+          }
+        },
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "controls": {
+            "items": {
+              "$ref": "#/$defs/VantaControl"
+            },
+            "title": "Controls",
+            "type": "array"
+          },
+          "next_page_cursor": {
+            "title": "Next Page Cursor",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "controls",
+          "next_page_cursor"
+        ],
+        "title": "ControlList",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "vanta-connector.list_controls",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "vanta"
+    },
+    {
+      "name": "get_control",
+      "description": "Read one Control in full by id.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Optional saved Vanta organization connection ID. Omit to use the first connected organization.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "control_id": {
+            "description": "Vanta control ID.",
+            "title": "Control Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "control_id"
+        ],
+        "title": "ControlIdParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "control_id": {
+            "title": "Control Id",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "frameworks": {
+            "title": "Frameworks",
+            "type": "string"
+          },
+          "test_count": {
+            "title": "Test Count",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "status",
+          "control_id",
+          "name",
+          "frameworks",
+          "test_count"
+        ],
+        "title": "VantaControl",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "vanta-connector.get_control",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "vanta"
+    },
+    {
+      "name": "list_frameworks",
+      "description": "List compliance Frameworks enabled on the connected organization (SOC 2, ISO 27001, HIPAA, etc.).",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Optional saved Vanta organization connection ID. Omit to use the first connected organization.",
+            "title": "Connection Id",
+            "type": "string"
+          }
+        },
+        "title": "ListFrameworksParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "$defs": {
+          "VantaFramework": {
+            "properties": {
+              "id": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "integer"
+                  }
+                ],
+                "title": "Id"
+              },
+              "title": {
+                "title": "Title",
+                "type": "string"
+              },
+              "kind": {
+                "default": "",
+                "title": "Kind",
+                "type": "string"
+              },
+              "subtitle": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Subtitle"
+              },
+              "description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Description"
+              },
+              "status": {
+                "title": "Status",
+                "type": "string"
+              },
+              "url": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Url"
+              },
+              "framework_id": {
+                "title": "Framework Id",
+                "type": "string"
+              },
+              "name": {
+                "title": "Name",
+                "type": "string"
+              },
+              "tests_passing": {
+                "title": "Tests Passing",
+                "type": "integer"
+              },
+              "tests_total": {
+                "title": "Tests Total",
+                "type": "integer"
+              }
+            },
+            "required": [
+              "id",
+              "title",
+              "status",
+              "framework_id",
+              "name",
+              "tests_passing",
+              "tests_total"
+            ],
+            "title": "VantaFramework",
+            "type": "object",
+            "x-sdl": "entity"
+          }
+        },
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "frameworks": {
+            "items": {
+              "$ref": "#/$defs/VantaFramework"
+            },
+            "title": "Frameworks",
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "frameworks"
+        ],
+        "title": "FrameworkList",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "vanta-connector.list_frameworks",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "vanta"
+    },
+    {
+      "name": "list_risks",
+      "description": "List Risk Register entries.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Optional saved Vanta organization connection ID. Omit to use the first connected organization.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "status": {
+            "default": "",
+            "description": "Optional risk status filter, e.g. 'open', 'closed', 'accepted'.",
+            "title": "Status",
+            "type": "string"
+          },
+          "limit": {
+            "default": 50,
+            "description": "Max risks to return (1-200).",
+            "title": "Limit",
+            "type": "integer"
+          },
+          "page_cursor": {
+            "default": "",
+            "description": "Pagination cursor from a previous call's next_page_cursor.",
+            "title": "Page Cursor",
+            "type": "string"
+          }
+        },
+        "title": "ListRisksParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "$defs": {
+          "VantaRisk": {
+            "properties": {
+              "id": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "integer"
+                  }
+                ],
+                "title": "Id"
+              },
+              "title": {
+                "title": "Title",
+                "type": "string"
+              },
+              "kind": {
+                "default": "",
+                "title": "Kind",
+                "type": "string"
+              },
+              "subtitle": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Subtitle"
+              },
+              "description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Description"
+              },
+              "status": {
+                "title": "Status",
+                "type": "string"
+              },
+              "url": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Url"
+              },
+              "risk_id": {
+                "title": "Risk Id",
+                "type": "string"
+              },
+              "likelihood": {
+                "title": "Likelihood",
+                "type": "integer"
+              },
+              "impact": {
+                "title": "Impact",
+                "type": "integer"
+              },
+              "owner": {
+                "title": "Owner",
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "title",
+              "status",
+              "risk_id",
+              "likelihood",
+              "impact",
+              "owner"
+            ],
+            "title": "VantaRisk",
+            "type": "object",
+            "x-sdl": "entity"
+          }
+        },
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "risks": {
+            "items": {
+              "$ref": "#/$defs/VantaRisk"
+            },
+            "title": "Risks",
+            "type": "array"
+          },
+          "next_page_cursor": {
+            "title": "Next Page Cursor",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "risks",
+          "next_page_cursor"
+        ],
+        "title": "RiskList",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "vanta-connector.list_risks",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "vanta"
+    },
+    {
+      "name": "get_risk",
+      "description": "Read one Risk Register entry in full by id.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Optional saved Vanta organization connection ID. Omit to use the first connected organization.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "risk_id": {
+            "description": "Vanta risk register entry ID.",
+            "title": "Risk Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "risk_id"
+        ],
+        "title": "RiskIdParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "risk_id": {
+            "title": "Risk Id",
+            "type": "string"
+          },
+          "likelihood": {
+            "title": "Likelihood",
+            "type": "integer"
+          },
+          "impact": {
+            "title": "Impact",
+            "type": "integer"
+          },
+          "owner": {
+            "title": "Owner",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "status",
+          "risk_id",
+          "likelihood",
+          "impact",
+          "owner"
+        ],
+        "title": "VantaRisk",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "vanta-connector.get_risk",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "vanta"
+    },
+    {
+      "name": "create_risk",
+      "description": "Create a new Risk Register entry.",
+      "action_type": "write",
+      "chain_callable": true,
+      "effects": [
+        "vanta.risk.created"
+      ],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Optional saved Vanta organization connection ID. Omit to use the first connected organization.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "title": {
+            "description": "Risk title.",
+            "title": "Title",
+            "type": "string"
+          },
+          "description": {
+            "default": "",
+            "description": "Risk description.",
+            "title": "Description",
+            "type": "string"
+          },
+          "likelihood": {
+            "default": 3,
+            "description": "Likelihood score, 1 (rare) to 5 (near-certain).",
+            "title": "Likelihood",
+            "type": "integer"
+          },
+          "impact": {
+            "default": 3,
+            "description": "Impact score, 1 (negligible) to 5 (severe).",
+            "title": "Impact",
+            "type": "integer"
+          },
+          "risk_scenario_id": {
+            "default": "",
+            "description": "Optional risk scenario/category ID to tie this risk to.",
+            "title": "Risk Scenario Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "title"
+        ],
+        "title": "CreateRiskParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "risk_id": {
+            "title": "Risk Id",
+            "type": "string"
+          },
+          "likelihood": {
+            "title": "Likelihood",
+            "type": "integer"
+          },
+          "impact": {
+            "title": "Impact",
+            "type": "integer"
+          },
+          "owner": {
+            "title": "Owner",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "status",
+          "risk_id",
+          "likelihood",
+          "impact",
+          "owner"
+        ],
+        "title": "VantaRisk",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "vanta-connector.create_risk",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "vanta"
+    },
+    {
+      "name": "update_risk",
+      "description": "Update selected fields of an existing Risk Register entry (status, treatment plan). Only given fields change.",
+      "action_type": "write",
+      "chain_callable": true,
+      "effects": [
+        "vanta.risk.updated"
+      ],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Optional saved Vanta organization connection ID. Omit to use the first connected organization.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "risk_id": {
+            "description": "Vanta risk register entry ID.",
+            "title": "Risk Id",
+            "type": "string"
+          },
+          "title": {
+            "default": "",
+            "description": "New title, or leave blank to keep unchanged.",
+            "title": "Title",
+            "type": "string"
+          },
+          "description": {
+            "default": "",
+            "description": "New description, or leave blank to keep unchanged.",
+            "title": "Description",
+            "type": "string"
+          },
+          "status": {
+            "default": "",
+            "description": "New status, e.g. 'open', 'closed', 'accepted', 'monitoring'. Leave blank to keep unchanged.",
+            "title": "Status",
+            "type": "string"
+          },
+          "likelihood": {
+            "default": 0,
+            "description": "New likelihood score 1-5, or 0 to keep unchanged.",
+            "title": "Likelihood",
+            "type": "integer"
+          },
+          "impact": {
+            "default": 0,
+            "description": "New impact score 1-5, or 0 to keep unchanged.",
+            "title": "Impact",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "risk_id"
+        ],
+        "title": "UpdateRiskParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "risk_id": {
+            "title": "Risk Id",
+            "type": "string"
+          },
+          "likelihood": {
+            "title": "Likelihood",
+            "type": "integer"
+          },
+          "impact": {
+            "title": "Impact",
+            "type": "integer"
+          },
+          "owner": {
+            "title": "Owner",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "status",
+          "risk_id",
+          "likelihood",
+          "impact",
+          "owner"
+        ],
+        "title": "VantaRisk",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "vanta-connector.update_risk",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "vanta"
+    },
+    {
+      "name": "list_risk_scenarios",
+      "description": "List Risk Scenarios (the named risk categories Risk Register entries can be tied to).",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Optional saved Vanta organization connection ID. Omit to use the first connected organization.",
+            "title": "Connection Id",
+            "type": "string"
+          }
+        },
+        "title": "ListRiskScenariosParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "$defs": {
+          "VantaRiskScenario": {
+            "properties": {
+              "id": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "integer"
+                  }
+                ],
+                "title": "Id"
+              },
+              "title": {
+                "title": "Title",
+                "type": "string"
+              },
+              "kind": {
+                "default": "",
+                "title": "Kind",
+                "type": "string"
+              },
+              "subtitle": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Subtitle"
+              },
+              "description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Description"
+              },
+              "status": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Status"
+              },
+              "url": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Url"
+              },
+              "scenario_id": {
+                "title": "Scenario Id",
+                "type": "string"
+              },
+              "name": {
+                "title": "Name",
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "title",
+              "scenario_id",
+              "name"
+            ],
+            "title": "VantaRiskScenario",
+            "type": "object",
+            "x-sdl": "entity"
+          }
+        },
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "scenarios": {
+            "items": {
+              "$ref": "#/$defs/VantaRiskScenario"
+            },
+            "title": "Scenarios",
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "scenarios"
+        ],
+        "title": "RiskScenarioList",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "vanta-connector.list_risk_scenarios",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "vanta"
+    },
+    {
+      "name": "list_vendors",
+      "description": "List Vendor risk inventory (third-party risk management) entries.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Optional saved Vanta organization connection ID. Omit to use the first connected organization.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "limit": {
+            "default": 50,
+            "description": "Max vendors to return (1-200).",
+            "title": "Limit",
+            "type": "integer"
+          },
+          "page_cursor": {
+            "default": "",
+            "description": "Pagination cursor from a previous call's next_page_cursor.",
+            "title": "Page Cursor",
+            "type": "string"
+          }
+        },
+        "title": "ListVendorsParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "$defs": {
+          "VantaVendor": {
+            "properties": {
+              "id": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "integer"
+                  }
+                ],
+                "title": "Id"
+              },
+              "title": {
+                "title": "Title",
+                "type": "string"
+              },
+              "kind": {
+                "default": "",
+                "title": "Kind",
+                "type": "string"
+              },
+              "subtitle": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Subtitle"
+              },
+              "description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Description"
+              },
+              "status": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Status"
+              },
+              "url": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Url"
+              },
+              "vendor_id": {
+                "title": "Vendor Id",
+                "type": "string"
+              },
+              "name": {
+                "title": "Name",
+                "type": "string"
+              },
+              "risk_tier": {
+                "title": "Risk Tier",
+                "type": "string"
+              },
+              "review_status": {
+                "title": "Review Status",
+                "type": "string"
+              },
+              "last_reviewed": {
+                "title": "Last Reviewed",
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "title",
+              "vendor_id",
+              "name",
+              "risk_tier",
+              "review_status",
+              "last_reviewed"
+            ],
+            "title": "VantaVendor",
+            "type": "object",
+            "x-sdl": "entity"
+          }
+        },
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "vendors": {
+            "items": {
+              "$ref": "#/$defs/VantaVendor"
+            },
+            "title": "Vendors",
+            "type": "array"
+          },
+          "next_page_cursor": {
+            "title": "Next Page Cursor",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "vendors",
+          "next_page_cursor"
+        ],
+        "title": "VendorList",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "vanta-connector.list_vendors",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "vanta"
+    },
+    {
+      "name": "get_vendor",
+      "description": "Read one Vendor risk record in full by id.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Optional saved Vanta organization connection ID. Omit to use the first connected organization.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "vendor_id": {
+            "description": "Vanta vendor ID.",
+            "title": "Vendor Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "vendor_id"
+        ],
+        "title": "VendorIdParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "vendor_id": {
+            "title": "Vendor Id",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "risk_tier": {
+            "title": "Risk Tier",
+            "type": "string"
+          },
+          "review_status": {
+            "title": "Review Status",
+            "type": "string"
+          },
+          "last_reviewed": {
+            "title": "Last Reviewed",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "vendor_id",
+          "name",
+          "risk_tier",
+          "review_status",
+          "last_reviewed"
+        ],
+        "title": "VantaVendor",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "vanta-connector.get_vendor",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "vanta"
+    },
+    {
+      "name": "create_vendor",
+      "description": "Register a new Vendor for risk tracking.",
+      "action_type": "write",
+      "chain_callable": true,
+      "effects": [
+        "vanta.vendor.created"
+      ],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Optional saved Vanta organization connection ID. Omit to use the first connected organization.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "name": {
+            "description": "Vendor name.",
+            "title": "Name",
+            "type": "string"
+          },
+          "website": {
+            "default": "",
+            "description": "Vendor website URL.",
+            "title": "Website",
+            "type": "string"
+          },
+          "description": {
+            "default": "",
+            "description": "What this vendor is used for.",
+            "title": "Description",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "title": "CreateVendorParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "vendor_id": {
+            "title": "Vendor Id",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "risk_tier": {
+            "title": "Risk Tier",
+            "type": "string"
+          },
+          "review_status": {
+            "title": "Review Status",
+            "type": "string"
+          },
+          "last_reviewed": {
+            "title": "Last Reviewed",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "vendor_id",
+          "name",
+          "risk_tier",
+          "review_status",
+          "last_reviewed"
+        ],
+        "title": "VantaVendor",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "vanta-connector.create_vendor",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "vanta"
+    },
+    {
+      "name": "update_vendor",
+      "description": "Update selected fields of an existing Vendor (risk tier, review status). Only given fields change.",
+      "action_type": "write",
+      "chain_callable": true,
+      "effects": [
+        "vanta.vendor.updated"
+      ],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Optional saved Vanta organization connection ID. Omit to use the first connected organization.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "vendor_id": {
+            "description": "Vanta vendor ID.",
+            "title": "Vendor Id",
+            "type": "string"
+          },
+          "risk_tier": {
+            "default": "",
+            "description": "New risk tier, e.g. 'critical', 'high', 'medium', 'low'. Leave blank to keep unchanged.",
+            "title": "Risk Tier",
+            "type": "string"
+          },
+          "status": {
+            "default": "",
+            "description": "New review status. Leave blank to keep unchanged.",
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "vendor_id"
+        ],
+        "title": "UpdateVendorParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "vendor_id": {
+            "title": "Vendor Id",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "risk_tier": {
+            "title": "Risk Tier",
+            "type": "string"
+          },
+          "review_status": {
+            "title": "Review Status",
+            "type": "string"
+          },
+          "last_reviewed": {
+            "title": "Last Reviewed",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "vendor_id",
+          "name",
+          "risk_tier",
+          "review_status",
+          "last_reviewed"
+        ],
+        "title": "VantaVendor",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "vanta-connector.update_vendor",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "vanta"
+    },
+    {
+      "name": "list_documents",
+      "description": "List Policy Documents tracked in Vanta (with review status/dates).",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Optional saved Vanta organization connection ID. Omit to use the first connected organization.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "limit": {
+            "default": 50,
+            "description": "Max documents to return (1-200).",
+            "title": "Limit",
+            "type": "integer"
+          },
+          "page_cursor": {
+            "default": "",
+            "description": "Pagination cursor from a previous call's next_page_cursor.",
+            "title": "Page Cursor",
+            "type": "string"
+          }
+        },
+        "title": "ListDocumentsParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "$defs": {
+          "VantaDocument": {
+            "properties": {
+              "id": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "integer"
+                  }
+                ],
+                "title": "Id"
+              },
+              "title": {
+                "title": "Title",
+                "type": "string"
+              },
+              "kind": {
+                "default": "",
+                "title": "Kind",
+                "type": "string"
+              },
+              "subtitle": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Subtitle"
+              },
+              "description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Description"
+              },
+              "status": {
+                "title": "Status",
+                "type": "string"
+              },
+              "url": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Url"
+              },
+              "document_id": {
+                "title": "Document Id",
+                "type": "string"
+              },
+              "name": {
+                "title": "Name",
+                "type": "string"
+              },
+              "document_type": {
+                "title": "Document Type",
+                "type": "string"
+              },
+              "last_updated": {
+                "title": "Last Updated",
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "title",
+              "status",
+              "document_id",
+              "name",
+              "document_type",
+              "last_updated"
+            ],
+            "title": "VantaDocument",
+            "type": "object",
+            "x-sdl": "entity"
+          }
+        },
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "documents": {
+            "items": {
+              "$ref": "#/$defs/VantaDocument"
+            },
+            "title": "Documents",
+            "type": "array"
+          },
+          "next_page_cursor": {
+            "title": "Next Page Cursor",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "documents",
+          "next_page_cursor"
+        ],
+        "title": "DocumentList",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "vanta-connector.list_documents",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "vanta"
+    },
+    {
+      "name": "get_document",
+      "description": "Read one Policy Document in full by id.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Optional saved Vanta organization connection ID. Omit to use the first connected organization.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "document_id": {
+            "description": "Vanta document ID.",
+            "title": "Document Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "document_id"
+        ],
+        "title": "DocumentIdParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "document_id": {
+            "title": "Document Id",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "document_type": {
+            "title": "Document Type",
+            "type": "string"
+          },
+          "last_updated": {
+            "title": "Last Updated",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "status",
+          "document_id",
+          "name",
+          "document_type",
+          "last_updated"
+        ],
+        "title": "VantaDocument",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "vanta-connector.get_document",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "vanta"
+    },
+    {
+      "name": "list_people",
+      "description": "List Personnel records with security-training and offboarding compliance status.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Optional saved Vanta organization connection ID. Omit to use the first connected organization.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "limit": {
+            "default": 50,
+            "description": "Max personnel records to return (1-200).",
+            "title": "Limit",
+            "type": "integer"
+          },
+          "page_cursor": {
+            "default": "",
+            "description": "Pagination cursor from a previous call's next_page_cursor.",
+            "title": "Page Cursor",
+            "type": "string"
+          }
+        },
+        "title": "ListPeopleParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "$defs": {
+          "VantaPerson": {
+            "properties": {
+              "id": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "integer"
+                  }
+                ],
+                "title": "Id"
+              },
+              "title": {
+                "title": "Title",
+                "type": "string"
+              },
+              "kind": {
+                "default": "",
+                "title": "Kind",
+                "type": "string"
+              },
+              "subtitle": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Subtitle"
+              },
+              "description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Description"
+              },
+              "status": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Status"
+              },
+              "url": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Url"
+              },
+              "person_id": {
+                "title": "Person Id",
+                "type": "string"
+              },
+              "name": {
+                "title": "Name",
+                "type": "string"
+              },
+              "email": {
+                "title": "Email",
+                "type": "string"
+              },
+              "offboarded": {
+                "title": "Offboarded",
+                "type": "boolean"
+              },
+              "training_status": {
+                "title": "Training Status",
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "title",
+              "person_id",
+              "name",
+              "email",
+              "offboarded",
+              "training_status"
+            ],
+            "title": "VantaPerson",
+            "type": "object",
+            "x-sdl": "entity"
+          }
+        },
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "people": {
+            "items": {
+              "$ref": "#/$defs/VantaPerson"
+            },
+            "title": "People",
+            "type": "array"
+          },
+          "next_page_cursor": {
+            "title": "Next Page Cursor",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "people",
+          "next_page_cursor"
+        ],
+        "title": "PeopleList",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "vanta-connector.list_people",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "vanta"
+    },
+    {
+      "name": "get_person",
+      "description": "Read one Personnel record in full by id.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Optional saved Vanta organization connection ID. Omit to use the first connected organization.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "person_id": {
+            "description": "Vanta personnel record ID.",
+            "title": "Person Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "person_id"
+        ],
+        "title": "PersonIdParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "person_id": {
+            "title": "Person Id",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "email": {
+            "title": "Email",
+            "type": "string"
+          },
+          "offboarded": {
+            "title": "Offboarded",
+            "type": "boolean"
+          },
+          "training_status": {
+            "title": "Training Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "person_id",
+          "name",
+          "email",
+          "offboarded",
+          "training_status"
+        ],
+        "title": "VantaPerson",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "vanta-connector.get_person",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "vanta"
+    },
+    {
+      "name": "list_integrations",
+      "description": "List connected data-source Integrations (cloud/IdP/HR/ticketing) Vanta pulls evidence from, with their sync status.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Optional saved Vanta organization connection ID. Omit to use the first connected organization.",
+            "title": "Connection Id",
+            "type": "string"
+          }
+        },
+        "title": "ListIntegrationsParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "$defs": {
+          "VantaIntegration": {
+            "properties": {
+              "id": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "integer"
+                  }
+                ],
+                "title": "Id"
+              },
+              "title": {
+                "title": "Title",
+                "type": "string"
+              },
+              "kind": {
+                "default": "",
+                "title": "Kind",
+                "type": "string"
+              },
+              "subtitle": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Subtitle"
+              },
+              "description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Description"
+              },
+              "status": {
+                "title": "Status",
+                "type": "string"
+              },
+              "url": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Url"
+              },
+              "integration_id": {
+                "title": "Integration Id",
+                "type": "string"
+              },
+              "name": {
+                "title": "Name",
+                "type": "string"
+              },
+              "category": {
+                "title": "Category",
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "title",
+              "status",
+              "integration_id",
+              "name",
+              "category"
+            ],
+            "title": "VantaIntegration",
+            "type": "object",
+            "x-sdl": "entity"
+          }
+        },
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "integrations": {
+            "items": {
+              "$ref": "#/$defs/VantaIntegration"
+            },
+            "title": "Integrations",
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "integrations"
+        ],
+        "title": "IntegrationList",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "vanta-connector.list_integrations",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "vanta"
+    },
+    {
+      "name": "list_groups",
+      "description": "List Groups (Vanta's grouping of resources/people for scoping tests).",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Optional saved Vanta organization connection ID. Omit to use the first connected organization.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "limit": {
+            "default": 50,
+            "description": "Max groups to return (1-200).",
+            "title": "Limit",
+            "type": "integer"
+          }
+        },
+        "title": "ListGroupsParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "$defs": {
+          "VantaGroup": {
+            "properties": {
+              "id": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "integer"
+                  }
+                ],
+                "title": "Id"
+              },
+              "title": {
+                "title": "Title",
+                "type": "string"
+              },
+              "kind": {
+                "default": "",
+                "title": "Kind",
+                "type": "string"
+              },
+              "subtitle": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Subtitle"
+              },
+              "description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Description"
+              },
+              "status": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Status"
+              },
+              "url": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Url"
+              },
+              "group_id": {
+                "title": "Group Id",
+                "type": "string"
+              },
+              "name": {
+                "title": "Name",
+                "type": "string"
+              },
+              "member_count": {
+                "title": "Member Count",
+                "type": "integer"
+              }
+            },
+            "required": [
+              "id",
+              "title",
+              "group_id",
+              "name",
+              "member_count"
+            ],
+            "title": "VantaGroup",
+            "type": "object",
+            "x-sdl": "entity"
+          }
+        },
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "groups": {
+            "items": {
+              "$ref": "#/$defs/VantaGroup"
+            },
+            "title": "Groups",
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "groups"
+        ],
+        "title": "GroupList",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "vanta-connector.list_groups",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "vanta"
+    },
+    {
+      "name": "list_monitored_computers",
+      "description": "List employee computers Vanta monitors for device-compliance (disk encryption, screen lock, AV, OS updates).",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Optional saved Vanta organization connection ID. Omit to use the first connected organization.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "limit": {
+            "default": 50,
+            "description": "Max monitored computers to return (1-200).",
+            "title": "Limit",
+            "type": "integer"
+          },
+          "page_cursor": {
+            "default": "",
+            "description": "Pagination cursor from a previous call's next_page_cursor.",
+            "title": "Page Cursor",
+            "type": "string"
+          }
+        },
+        "title": "ListMonitoredComputersParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "$defs": {
+          "VantaComputer": {
+            "properties": {
+              "id": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "integer"
+                  }
+                ],
+                "title": "Id"
+              },
+              "title": {
+                "title": "Title",
+                "type": "string"
+              },
+              "kind": {
+                "default": "",
+                "title": "Kind",
+                "type": "string"
+              },
+              "subtitle": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Subtitle"
+              },
+              "description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Description"
+              },
+              "status": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Status"
+              },
+              "url": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Url"
+              },
+              "computer_id": {
+                "title": "Computer Id",
+                "type": "string"
+              },
+              "owner_email": {
+                "title": "Owner Email",
+                "type": "string"
+              },
+              "hostname": {
+                "title": "Hostname",
+                "type": "string"
+              },
+              "is_compliant": {
+                "title": "Is Compliant",
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "id",
+              "title",
+              "computer_id",
+              "owner_email",
+              "hostname",
+              "is_compliant"
+            ],
+            "title": "VantaComputer",
+            "type": "object",
+            "x-sdl": "entity"
+          }
+        },
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "computers": {
+            "items": {
+              "$ref": "#/$defs/VantaComputer"
+            },
+            "title": "Computers",
+            "type": "array"
+          },
+          "next_page_cursor": {
+            "title": "Next Page Cursor",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "computers",
+          "next_page_cursor"
+        ],
+        "title": "MonitoredComputerList",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "vanta-connector.list_monitored_computers",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "vanta"
+    },
+    {
+      "name": "audit_compliance_posture",
+      "description": "Build one aggregated audit-readiness health report: failing tests, overdue risks, overdue vendor reviews, and documents past their review date.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Optional saved Vanta organization connection ID. Omit to use the first connected organization.",
+            "title": "Connection Id",
+            "type": "string"
+          }
+        },
+        "title": "ConnectionRefParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "organization": {
+            "title": "Organization",
+            "type": "string"
+          },
+          "failing_tests": {
+            "title": "Failing Tests",
+            "type": "integer"
+          },
+          "total_tests": {
+            "title": "Total Tests",
+            "type": "integer"
+          },
+          "overdue_risks": {
+            "title": "Overdue Risks",
+            "type": "integer"
+          },
+          "total_risks": {
+            "title": "Total Risks",
+            "type": "integer"
+          },
+          "overdue_vendor_reviews": {
+            "title": "Overdue Vendor Reviews",
+            "type": "integer"
+          },
+          "total_vendors": {
+            "title": "Total Vendors",
+            "type": "integer"
+          },
+          "disabled_integrations": {
+            "title": "Disabled Integrations",
+            "type": "integer"
+          },
+          "notes": {
+            "title": "Notes",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "organization",
+          "failing_tests",
+          "total_tests",
+          "overdue_risks",
+          "total_risks",
+          "overdue_vendor_reviews",
+          "total_vendors",
+          "disabled_integrations",
+          "notes"
+        ],
+        "title": "ComplianceAudit",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "vanta-connector.audit_compliance_posture",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "vanta"
+    }
+  ],
+  "signals": [],
+  "schedules": [],
+  "required_scopes": [],
+  "icon_size_bytes": 583,
+  "lifecycle": {
+    "health_check": {
+      "interval_sec": 60
+    }
+  },
+  "secrets": [
+    {
+      "name": "vanta_connections",
+      "description": "JSON list of connected Vanta organizations and encrypted OAuth2 Client Credentials. Managed only through connect_vanta and disconnect_vanta.",
+      "required": true,
+      "write_mode": "both",
+      "max_bytes": 65536,
+      "scope": "user",
+      "rotation_hint_days": 90
+    }
+  ],
+  "panels": [
+    {
+      "panel_id": "secrets",
+      "slot": "right",
+      "title": "Secrets",
+      "tree": {},
+      "icon": "KeyRound",
+      "refresh": "manual",
+      "center_overlay": false
+    },
+    {
+      "panel_id": "vanta_sidebar",
+      "slot": "left",
+      "title": "Vanta",
+      "tree": {},
+      "icon": "",
+      "refresh": "manual",
+      "center_overlay": false
+    },
+    {
+      "panel_id": "vanta_connect_help",
+      "slot": "center",
+      "title": "How do I get this?",
+      "tree": {},
+      "icon": "",
+      "refresh": "manual",
+      "center_overlay": true
+    },
+    {
+      "panel_id": "vanta_overview",
+      "slot": "center",
+      "title": "Compliance overview",
+      "tree": {},
+      "icon": "",
+      "refresh": "manual",
+      "center_overlay": true
+    },
+    {
+      "panel_id": "vanta_tests",
+      "slot": "center",
+      "title": "Tests",
+      "tree": {},
+      "icon": "",
+      "refresh": "manual",
+      "center_overlay": true
+    },
+    {
+      "panel_id": "vanta_controls",
+      "slot": "center",
+      "title": "Controls",
+      "tree": {},
+      "icon": "",
+      "refresh": "manual",
+      "center_overlay": true
+    },
+    {
+      "panel_id": "vanta_frameworks",
+      "slot": "center",
+      "title": "Frameworks",
+      "tree": {},
+      "icon": "",
+      "refresh": "manual",
+      "center_overlay": true
+    },
+    {
+      "panel_id": "vanta_risks",
+      "slot": "center",
+      "title": "Risk register",
+      "tree": {},
+      "icon": "",
+      "refresh": "manual",
+      "center_overlay": true
+    },
+    {
+      "panel_id": "vanta_vendors",
+      "slot": "center",
+      "title": "Vendors",
+      "tree": {},
+      "icon": "",
+      "refresh": "manual",
+      "center_overlay": true
+    },
+    {
+      "panel_id": "vanta_documents",
+      "slot": "center",
+      "title": "Documents",
+      "tree": {},
+      "icon": "",
+      "refresh": "manual",
+      "center_overlay": true
+    },
+    {
+      "panel_id": "vanta_people",
+      "slot": "center",
+      "title": "Personnel",
+      "tree": {},
+      "icon": "",
+      "refresh": "manual",
+      "center_overlay": true
+    },
+    {
+      "panel_id": "vanta_integrations",
+      "slot": "center",
+      "title": "Integrations",
+      "tree": {},
+      "icon": "",
+      "refresh": "manual",
+      "center_overlay": true
+    },
+    {
+      "panel_id": "vanta_settings",
+      "slot": "center",
+      "title": "Vanta settings",
+      "tree": {},
+      "icon": "Settings",
+      "refresh": "manual",
+      "center_overlay": true
+    }
+  ]
+}
