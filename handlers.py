@@ -99,14 +99,14 @@ async def disconnect_vanta(ctx, params: DisconnectVantaParams) -> ActionResult:
     if len(remaining) == len(connections):
         return ActionResult.error(f"No saved Vanta connection with id '{params.connection_id}'.")
     await _save_connections(ctx, remaining)
-    return ActionResult.success(data=DeleteResult(ok=True, detail="Vanta organization disconnected."))
+    return ActionResult.success(data=DeleteResult(ok=True, detail="Vanta organization disconnected."), summary="Vanta disconnected.")
 
 
 @chat.function("list_connections", "List the connected Vanta organizations.", action_type="read", chain_callable=True, data_model=ConnectionList, event="vanta-connector.list_connections")
 async def list_connections(ctx, params: NoParams) -> ActionResult:
     """List the connected Vanta organizations."""
     connections = await _load_connections(ctx)
-    return ActionResult.success(data=ConnectionList(connections=[_connection_entity(c) for c in connections]))
+    return ActionResult.success(data=ConnectionList(connections=[_connection_entity(c) for c in connections]), summary="Connections listed.")
 
 
 # ---- Tests ----
@@ -138,7 +138,7 @@ async def list_tests(ctx, params: ListTestsParams) -> ActionResult:
         return ActionResult.error(str(exc), retryable=exc.retryable)
     items = (data or {}).get("results", {}).get("data", data.get("data", []) if isinstance(data, dict) else [])
     cursor = (data or {}).get("results", {}).get("pageInfo", {}).get("endCursor", "")
-    return ActionResult.success(data=TestList(tests=[_test_entity(t) for t in items], next_page_cursor=cursor or ""))
+    return ActionResult.success(data=TestList(tests=[_test_entity(t) for t in items], next_page_cursor=cursor or ""), summary="Tests listed.")
 
 
 @chat.function("get_test", "Read one compliance Test in full by id.", action_type="read", chain_callable=True, data_model=VantaTest, event="vanta-connector.get_test")
@@ -150,7 +150,7 @@ async def get_test(ctx, params: TestIdParams) -> ActionResult:
         data, _ = await client.request("GET", f"/v1/tests/{params.test_id}")
     except vc.VantaError as exc:
         return ActionResult.error(str(exc), retryable=exc.retryable)
-    return ActionResult.success(data=_test_entity(data or {}))
+    return ActionResult.success(data=_test_entity(data or {}), summary="Test retrieved.")
 
 
 @chat.function("dismiss_test", "Dismiss a failing Test with a documented reason -- records an explicit exception/justification in Vanta rather than silently ignoring the failure.", action_type="write", chain_callable=True, data_model=VantaTest, event="vanta-connector.dismiss_test", effects=["vanta.test.dismissed"])
@@ -194,7 +194,7 @@ async def list_controls(ctx, params: ListControlsParams) -> ActionResult:
         return ActionResult.error(str(exc), retryable=exc.retryable)
     items = (data or {}).get("results", {}).get("data", data.get("data", []) if isinstance(data, dict) else [])
     cursor = (data or {}).get("results", {}).get("pageInfo", {}).get("endCursor", "")
-    return ActionResult.success(data=ControlList(controls=[_control_entity(x) for x in items], next_page_cursor=cursor or ""))
+    return ActionResult.success(data=ControlList(controls=[_control_entity(x) for x in items], next_page_cursor=cursor or ""), summary="Controls listed.")
 
 
 @chat.function("get_control", "Read one Control in full by id.", action_type="read", chain_callable=True, data_model=VantaControl, event="vanta-connector.get_control")
@@ -206,7 +206,7 @@ async def get_control(ctx, params: ControlIdParams) -> ActionResult:
         data, _ = await client.request("GET", f"/v1/controls/{params.control_id}")
     except vc.VantaError as exc:
         return ActionResult.error(str(exc), retryable=exc.retryable)
-    return ActionResult.success(data=_control_entity(data or {}))
+    return ActionResult.success(data=_control_entity(data or {}), summary="Control retrieved.")
 
 
 # ---- Frameworks ----
@@ -231,7 +231,7 @@ async def list_frameworks(ctx, params: ListFrameworksParams) -> ActionResult:
     except vc.VantaError as exc:
         return ActionResult.error(str(exc), retryable=exc.retryable)
     items = (data or {}).get("results", {}).get("data", data.get("data", []) if isinstance(data, dict) else [])
-    return ActionResult.success(data=FrameworkList(frameworks=[_framework_entity(f) for f in items]))
+    return ActionResult.success(data=FrameworkList(frameworks=[_framework_entity(f) for f in items]), summary="Frameworks listed.")
 
 
 # ---- Risk Register ----
@@ -263,7 +263,7 @@ async def list_risks(ctx, params: ListRisksParams) -> ActionResult:
         return ActionResult.error(str(exc), retryable=exc.retryable)
     items = (data or {}).get("results", {}).get("data", data.get("data", []) if isinstance(data, dict) else [])
     cursor = (data or {}).get("results", {}).get("pageInfo", {}).get("endCursor", "")
-    return ActionResult.success(data=RiskList(risks=[_risk_entity(r) for r in items], next_page_cursor=cursor or ""))
+    return ActionResult.success(data=RiskList(risks=[_risk_entity(r) for r in items], next_page_cursor=cursor or ""), summary="Risks listed.")
 
 
 @chat.function("get_risk", "Read one Risk Register entry in full by id.", action_type="read", chain_callable=True, data_model=VantaRisk, event="vanta-connector.get_risk")
@@ -275,7 +275,7 @@ async def get_risk(ctx, params: RiskIdParams) -> ActionResult:
         data, _ = await client.request("GET", f"/v1/risks/{params.risk_id}")
     except vc.VantaError as exc:
         return ActionResult.error(str(exc), retryable=exc.retryable)
-    return ActionResult.success(data=_risk_entity(data or {}))
+    return ActionResult.success(data=_risk_entity(data or {}), summary="Risk retrieved.")
 
 
 @chat.function("create_risk", "Create a new Risk Register entry.", action_type="write", chain_callable=True, data_model=VantaRisk, event="vanta-connector.create_risk", effects=["vanta.risk.created"])
@@ -330,7 +330,7 @@ async def list_risk_scenarios(ctx, params: ListRiskScenariosParams) -> ActionRes
         return ActionResult.error(str(exc), retryable=exc.retryable)
     items = (data or {}).get("results", {}).get("data", data.get("data", []) if isinstance(data, dict) else [])
     scenarios = [VantaRiskScenario(scenario_id=s.get("id", ""), name=s.get("name", ""), description=s.get("description", "")) for s in items]
-    return ActionResult.success(data=RiskScenarioList(scenarios=scenarios))
+    return ActionResult.success(data=RiskScenarioList(scenarios=scenarios), summary="Risk scenarios listed.")
 
 
 # ---- Vendors ----
@@ -359,7 +359,7 @@ async def list_vendors(ctx, params: ListVendorsParams) -> ActionResult:
         return ActionResult.error(str(exc), retryable=exc.retryable)
     items = (data or {}).get("results", {}).get("data", data.get("data", []) if isinstance(data, dict) else [])
     cursor = (data or {}).get("results", {}).get("pageInfo", {}).get("endCursor", "")
-    return ActionResult.success(data=VendorList(vendors=[_vendor_entity(v) for v in items], next_page_cursor=cursor or ""))
+    return ActionResult.success(data=VendorList(vendors=[_vendor_entity(v) for v in items], next_page_cursor=cursor or ""), summary="Vendors listed.")
 
 
 @chat.function("get_vendor", "Read one Vendor risk record in full by id.", action_type="read", chain_callable=True, data_model=VantaVendor, event="vanta-connector.get_vendor")
@@ -371,7 +371,7 @@ async def get_vendor(ctx, params: VendorIdParams) -> ActionResult:
         data, _ = await client.request("GET", f"/v1/vendors/{params.vendor_id}")
     except vc.VantaError as exc:
         return ActionResult.error(str(exc), retryable=exc.retryable)
-    return ActionResult.success(data=_vendor_entity(data or {}))
+    return ActionResult.success(data=_vendor_entity(data or {}), summary="Vendor retrieved.")
 
 
 @chat.function("create_vendor", "Register a new Vendor for risk tracking.", action_type="write", chain_callable=True, data_model=VantaVendor, event="vanta-connector.create_vendor", effects=["vanta.vendor.created"])
@@ -434,7 +434,7 @@ async def list_documents(ctx, params: ListDocumentsParams) -> ActionResult:
         return ActionResult.error(str(exc), retryable=exc.retryable)
     items = (data or {}).get("results", {}).get("data", data.get("data", []) if isinstance(data, dict) else [])
     cursor = (data or {}).get("results", {}).get("pageInfo", {}).get("endCursor", "")
-    return ActionResult.success(data=DocumentList(documents=[_document_entity(d) for d in items], next_page_cursor=cursor or ""))
+    return ActionResult.success(data=DocumentList(documents=[_document_entity(d) for d in items], next_page_cursor=cursor or ""), summary="Documents listed.")
 
 
 @chat.function("get_document", "Read one Policy Document in full by id.", action_type="read", chain_callable=True, data_model=VantaDocument, event="vanta-connector.get_document")
@@ -446,7 +446,7 @@ async def get_document(ctx, params: DocumentIdParams) -> ActionResult:
         data, _ = await client.request("GET", f"/v1/documents/{params.document_id}")
     except vc.VantaError as exc:
         return ActionResult.error(str(exc), retryable=exc.retryable)
-    return ActionResult.success(data=_document_entity(data or {}))
+    return ActionResult.success(data=_document_entity(data or {}), summary="Document retrieved.")
 
 
 # ---- People (personnel compliance) ----
@@ -477,7 +477,7 @@ async def list_people(ctx, params: ListPeopleParams) -> ActionResult:
         return ActionResult.error(str(exc), retryable=exc.retryable)
     items = (data or {}).get("results", {}).get("data", data.get("data", []) if isinstance(data, dict) else [])
     cursor = (data or {}).get("results", {}).get("pageInfo", {}).get("endCursor", "")
-    return ActionResult.success(data=PeopleList(people=[_person_entity(p) for p in items], next_page_cursor=cursor or ""))
+    return ActionResult.success(data=PeopleList(people=[_person_entity(p) for p in items], next_page_cursor=cursor or ""), summary="People listed.")
 
 
 @chat.function("get_person", "Read one Personnel record in full by id.", action_type="read", chain_callable=True, data_model=VantaPerson, event="vanta-connector.get_person")
@@ -489,7 +489,7 @@ async def get_person(ctx, params: PersonIdParams) -> ActionResult:
         data, _ = await client.request("GET", f"/v1/people/{params.person_id}")
     except vc.VantaError as exc:
         return ActionResult.error(str(exc), retryable=exc.retryable)
-    return ActionResult.success(data=_person_entity(data or {}))
+    return ActionResult.success(data=_person_entity(data or {}), summary="Person retrieved.")
 
 
 # ---- Integrations, Groups, Monitored Computers ----
@@ -505,7 +505,7 @@ async def list_integrations(ctx, params: ListIntegrationsParams) -> ActionResult
         return ActionResult.error(str(exc), retryable=exc.retryable)
     items = (data or {}).get("results", {}).get("data", data.get("data", []) if isinstance(data, dict) else [])
     integrations = [VantaIntegration(name=i.get("name", ""), status=i.get("status", ""), last_sync=i.get("lastSyncedAt", "")) for i in items]
-    return ActionResult.success(data=IntegrationList(integrations=integrations))
+    return ActionResult.success(data=IntegrationList(integrations=integrations), summary="Integrations listed.")
 
 
 @chat.function("list_groups", "List Groups (Vanta's grouping of resources/people for scoping tests).", action_type="read", chain_callable=True, data_model=GroupList, event="vanta-connector.list_groups")
@@ -519,7 +519,7 @@ async def list_groups(ctx, params: ListGroupsParams) -> ActionResult:
         return ActionResult.error(str(exc), retryable=exc.retryable)
     items = (data or {}).get("results", {}).get("data", data.get("data", []) if isinstance(data, dict) else [])
     groups = [VantaGroup(group_id=g.get("id", ""), name=g.get("name", ""), member_count=len(g.get("members") or [])) for g in items]
-    return ActionResult.success(data=GroupList(groups=groups))
+    return ActionResult.success(data=GroupList(groups=groups), summary="Groups listed.")
 
 
 @chat.function("list_monitored_computers", "List employee computers Vanta monitors for device-compliance (disk encryption, screen lock, AV, OS updates).", action_type="read", chain_callable=True, data_model=MonitoredComputerList, event="vanta-connector.list_monitored_computers")
@@ -537,7 +537,7 @@ async def list_monitored_computers(ctx, params: ListMonitoredComputersParams) ->
     items = (data or {}).get("results", {}).get("data", data.get("data", []) if isinstance(data, dict) else [])
     cursor = (data or {}).get("results", {}).get("pageInfo", {}).get("endCursor", "")
     computers = [VantaComputer(computer_id=x.get("id", ""), owner_email=x.get("ownerEmail", ""), hostname=x.get("hostname", ""), is_compliant=bool(x.get("isCompliant", False))) for x in items]
-    return ActionResult.success(data=MonitoredComputerList(computers=computers, next_page_cursor=cursor or ""))
+    return ActionResult.success(data=MonitoredComputerList(computers=computers, next_page_cursor=cursor or ""), summary="Monitored computers listed.")
 
 
 # ---- Value-add audit report ----
@@ -582,5 +582,5 @@ async def audit_compliance_posture(ctx, params: ConnectionRefParams) -> ActionRe
         total_vendors=len(vendors),
         disabled_integrations=disabled_integrations,
         notes=notes,
-    ))
+    ), summary="Compliance posture audit ready.")
 
