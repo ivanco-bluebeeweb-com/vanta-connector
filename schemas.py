@@ -136,16 +136,22 @@ class DismissTestParams(TestIdParams):
 # ---- SDL entities ----
 
 class VantaConnection(sdl.Entity):
+    id: str = ""
+    title: str = ""
     connection_id: str
     label: str
     base_url: str
 
 
 class ConnectionList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     connections: list[VantaConnection]
 
 
 class VantaTest(sdl.Entity):
+    id: str = ""
+    title: str = ""
     test_id: str
     name: str
     status: str
@@ -154,11 +160,15 @@ class VantaTest(sdl.Entity):
 
 
 class TestList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     tests: list[VantaTest]
     next_page_cursor: str
 
 
 class VantaControl(sdl.Entity):
+    id: str = ""
+    title: str = ""
     control_id: str
     name: str
     frameworks: str
@@ -167,11 +177,15 @@ class VantaControl(sdl.Entity):
 
 
 class ControlList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     controls: list[VantaControl]
     next_page_cursor: str
 
 
 class VantaFramework(sdl.Entity):
+    id: str = ""
+    title: str = ""
     framework_id: str
     name: str
     status: str
@@ -180,10 +194,13 @@ class VantaFramework(sdl.Entity):
 
 
 class FrameworkList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     frameworks: list[VantaFramework]
 
 
 class VantaRisk(sdl.Entity):
+    id: str = ""
     risk_id: str
     title: str
     likelihood: int
@@ -193,20 +210,28 @@ class VantaRisk(sdl.Entity):
 
 
 class RiskList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     risks: list[VantaRisk]
     next_page_cursor: str
 
 
 class VantaRiskScenario(sdl.Entity):
+    id: str = ""
+    title: str = ""
     scenario_id: str
     name: str
 
 
 class RiskScenarioList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     scenarios: list[VantaRiskScenario]
 
 
 class VantaVendor(sdl.Entity):
+    id: str = ""
+    title: str = ""
     vendor_id: str
     name: str
     risk_tier: str
@@ -215,11 +240,15 @@ class VantaVendor(sdl.Entity):
 
 
 class VendorList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     vendors: list[VantaVendor]
     next_page_cursor: str
 
 
 class VantaDocument(sdl.Entity):
+    id: str = ""
+    title: str = ""
     document_id: str
     name: str
     document_type: str
@@ -228,11 +257,15 @@ class VantaDocument(sdl.Entity):
 
 
 class DocumentList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     documents: list[VantaDocument]
     next_page_cursor: str
 
 
 class VantaPerson(sdl.Entity):
+    id: str = ""
+    title: str = ""
     person_id: str
     name: str
     email: str
@@ -241,11 +274,15 @@ class VantaPerson(sdl.Entity):
 
 
 class PeopleList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     people: list[VantaPerson]
     next_page_cursor: str
 
 
 class VantaIntegration(sdl.Entity):
+    id: str = ""
+    title: str = ""
     integration_id: str
     name: str
     category: str
@@ -253,20 +290,28 @@ class VantaIntegration(sdl.Entity):
 
 
 class IntegrationList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     integrations: list[VantaIntegration]
 
 
 class VantaGroup(sdl.Entity):
+    id: str = ""
+    title: str = ""
     group_id: str
     name: str
     member_count: int
 
 
 class GroupList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     groups: list[VantaGroup]
 
 
 class VantaComputer(sdl.Entity):
+    id: str = ""
+    title: str = ""
     computer_id: str
     owner_email: str
     hostname: str
@@ -274,11 +319,15 @@ class VantaComputer(sdl.Entity):
 
 
 class MonitoredComputerList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     computers: list[VantaComputer]
     next_page_cursor: str
 
 
 class ComplianceAudit(sdl.Entity):
+    id: str = ""
+    title: str = ""
     organization: str
     failing_tests: int
     total_tests: int
@@ -291,5 +340,7 @@ class ComplianceAudit(sdl.Entity):
 
 
 class DeleteResult(sdl.Entity):
+    id: str = ""
+    title: str = ""
     ok: bool
     detail: str
