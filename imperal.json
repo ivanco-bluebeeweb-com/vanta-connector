@@ -4712,5 +4712,44 @@
       "refresh": "manual",
       "center_overlay": true
     }
-  ]
+  ],
+  "pricing": {
+    "model": "per_action",
+    "currency": "credits",
+    "monthly_price": 0,
+    "free_tools": [
+      "connect_vanta",
+      "disconnect_vanta",
+      "list_connections"
+    ],
+    "tool_prices": {
+      "connect_vanta": 0,
+      "disconnect_vanta": 0,
+      "list_connections": 0,
+      "list_tests": 8,
+      "get_test": 8,
+      "dismiss_test": 16,
+      "list_controls": 8,
+      "get_control": 8,
+      "list_frameworks": 8,
+      "list_risks": 8,
+      "get_risk": 8,
+      "create_risk": 16,
+      "update_risk": 16,
+      "list_risk_scenarios": 8,
+      "list_vendors": 8,
+      "get_vendor": 8,
+      "create_vendor": 16,
+      "update_vendor": 16,
+      "list_documents": 8,
+      "get_document": 8,
+      "list_people": 8,
+      "get_person": 8,
+      "list_integrations": 8,
+      "list_groups": 8,
+      "list_monitored_computers": 8,
+      "audit_compliance_posture": 20
+    },
+    "notes": "Standard platform scale {0, 8, 16, 20, 40}. 0 = access setup and harmless discovery. 8 = read/list/search. 16 = standard single mutation/CRUD. 20 = bulk or heavy audit operation."
+  }
 }
