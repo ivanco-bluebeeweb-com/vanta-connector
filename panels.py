@@ -31,8 +31,7 @@ def _field(label: str, node: ui.UINode) -> ui.UINode:
 
 def _settings_button() -> ui.UINode:
     return ui.Button(
-        "App settings", variant="secondary", size="sm", full_width=True,
-        icon="Settings", on_click=ui.Call("__panel__vanta_settings"),
+        "App settings", variant="secondary", size="sm", icon="Settings", on_click=ui.Call("__panel__vanta_settings"),
     )
 
 
@@ -43,6 +42,9 @@ async def vanta_sidebar(ctx, **kwargs) -> ui.UINode:
         return ui.Stack(direction="v", gap=3, align="stretch", children=[
             ui.Button("How do I get this?", variant="ghost", size="sm", icon="HelpCircle",
                       on_click=ui.Call("__panel__vanta_connect_help")),
+            ui.Button("Sign in with Vanta (OAuth 2.0 / SSO)", variant="primary", size="sm", icon="login"),
+            ui.Divider(),
+            ui.Text("Or connect via OAuth2 Client Credentials", variant="caption"),
             ui.Form(action="connect_vanta", submit_label="Connect", children=[
                 _field("Organization label", ui.Input(param_name="label", placeholder="Acme Corp — Production")),
                 _field("Client ID", ui.Input(param_name="client_id", placeholder="vnt_client_8f2a1c...")),
@@ -54,23 +56,23 @@ async def vanta_sidebar(ctx, **kwargs) -> ui.UINode:
     return ui.Stack(direction="v", gap=3, align="stretch", children=[
         ui.Text(c.get("label") or c.get("client_id", ""), variant="body"),
         ui.Divider(),
-        ui.Button("Compliance overview", variant="ghost", size="sm", full_width=True, icon="ShieldCheck",
+        ui.Button("Compliance overview", variant="ghost", size="sm", icon="ShieldCheck",
                   on_click=ui.Call("__panel__vanta_overview")),
-        ui.Button("Tests", variant="ghost", size="sm", full_width=True, icon="CheckCircle2",
+        ui.Button("Tests", variant="ghost", size="sm", icon="CheckCircle2",
                   on_click=ui.Call("__panel__vanta_tests")),
-        ui.Button("Controls", variant="ghost", size="sm", full_width=True, icon="ListChecks",
+        ui.Button("Controls", variant="ghost", size="sm", icon="ListChecks",
                   on_click=ui.Call("__panel__vanta_controls")),
-        ui.Button("Frameworks", variant="ghost", size="sm", full_width=True, icon="Layers",
+        ui.Button("Frameworks", variant="ghost", size="sm", icon="Layers",
                   on_click=ui.Call("__panel__vanta_frameworks")),
-        ui.Button("Risk register", variant="ghost", size="sm", full_width=True, icon="AlertTriangle",
+        ui.Button("Risk register", variant="ghost", size="sm", icon="AlertTriangle",
                   on_click=ui.Call("__panel__vanta_risks")),
-        ui.Button("Vendors", variant="ghost", size="sm", full_width=True, icon="Building2",
+        ui.Button("Vendors", variant="ghost", size="sm", icon="Building2",
                   on_click=ui.Call("__panel__vanta_vendors")),
-        ui.Button("Documents", variant="ghost", size="sm", full_width=True, icon="FileText",
+        ui.Button("Documents", variant="ghost", size="sm", icon="FileText",
                   on_click=ui.Call("__panel__vanta_documents")),
-        ui.Button("Personnel", variant="ghost", size="sm", full_width=True, icon="Users",
+        ui.Button("Personnel", variant="ghost", size="sm", icon="Users",
                   on_click=ui.Call("__panel__vanta_people")),
-        ui.Button("Integrations", variant="ghost", size="sm", full_width=True, icon="Plug",
+        ui.Button("Integrations", variant="ghost", size="sm", icon="Plug",
                   on_click=ui.Call("__panel__vanta_integrations")),
         ui.Divider(),
         _settings_button(),
